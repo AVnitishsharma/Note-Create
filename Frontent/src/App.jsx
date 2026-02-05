@@ -5,7 +5,7 @@ const App = () => {
   console.log("dom render")
   const [note, setnote] = useState([])
   const [popup, setPopup] = useState(false)
-  const [editpopup, seteditPopup] = useState(false)
+  const [editpopup, seteditPopup] = useState(null)
 
   function fetchNotes() {
     axios.get("http://localhost:3000/notes")
@@ -30,8 +30,9 @@ const App = () => {
   }
 
   function deletehedler(noteId){
-    axios.delete("http://localhost:3000/notes/"+noteId)
-    fetchNotes()
+    axios.delete("http://localhost:3000/notes/"+noteId).then(() => {
+      fetchNotes()
+    })
   }
 
   function hendleedit(e, noteId){
@@ -44,9 +45,18 @@ const App = () => {
       title: newtitle.value,
       description: newdescription.value
     })
-    fetchNotes()
+    .then(()=>{
+      fetchNotes()
+    })
   }
 
+  function getRandomColor() {
+    const r = Math.floor(Math.random() * 126) + 20
+    const g = Math.floor(Math.random() * 86) + 20
+    const b = Math.floor(Math.random() * 156) + 20
+
+    return `rgb(${r}, ${g}, ${b})`
+  }
 
   return (
     <>
@@ -63,24 +73,25 @@ const App = () => {
       {/* add popup ------------------------------- */}
       <div className="addpopup" style={{ display: popup ? "flex" : "none" }} onClick={() => setPopup(!popup)}>
         <form className="note-create-from" onSubmit={hendlersub} onClick={(e) => e.stopPropagation()}>
+          <h2>Add New Note</h2>
           <h4>Title</h4>
           <input name='title' type="text" className='title' placeholder='Enter your topic' required/>
           <h4>Description</h4>
           <textarea name='description' type="text" className='discription' placeholder='Enter some description'/>
-          <button className='btn' onClick={() => {setPopup(!popup), fetchNotes()}}>Submit</button>
+          <button className='btn' onClick={() => {setPopup(!popup), fetchNotes()}}>Create Note</button>
         </form>
       </div>
 
       {/* eddit popup ------------------------------------*/}
       {note.map((note)=>{
-          return <div className="editpopup" style={{ display: editpopup ? "flex" : "none" }} onClick={() => seteditPopup(!editpopup)}>
+          return <div key={note._id} className="editpopup" style={{ display: editpopup === note._id ? "flex" : "none" }} onClick={() => seteditPopup(null)}>
          <form className="note-create-from" onSubmit={(e)=>hendleedit(e,note._id)} onClick={(e) => e.stopPropagation()}>
             <h2>Eddit Note</h2>
             <h4>Title</h4>
             <input name='newtitle' defaultValue={note.title} type="text" className='title' placeholder='Enter your topic' required/>
             <h4>Description</h4>
             <textarea name='newdescription' defaultValue={note.description} type="text" className='discription' placeholder='Enter some description'/>
-            <button className='btn' >Submit</button>
+            <button className='btn' onClick={()=>seteditPopup(null)} >Submit</button>
           </form>
         </div>
       })}
@@ -89,14 +100,14 @@ const App = () => {
       {/* notes section ----------------------------------------- */}
       <div className="notes">
         {note.map((note)=>{
-          return <div className="note">
+          return <div key={note._id} className="note" style={{ backgroundColor: getRandomColor() }}>
             <h1>{note.title}</h1>
-            <div className="info">
+            <div className="info" style={{ backgroundColor: getRandomColor() }}>
               <p>{note.description}</p>
               <div className="btns">
-                <div className="deletebtn" onClick={()=>{deletehedler(note._id),fetchNotes()}}><i className="ri-delete-bin-7-line"></i></div>
+                <div className="deletebtn" onClick={()=>{deletehedler(note._id)}}><i className="ri-delete-bin-7-line"></i></div>
                 <div className="likebtn"><i className="ri-heart-3-line"></i></div>
-                <div className="editbtn" onClick={() => seteditPopup(!editpopup)}>
+                <div className="editbtn" onClick={() => seteditPopup(note._id)}>
                   <i className="ri-pencil-fill" ></i>
                 </div>
               </div>
