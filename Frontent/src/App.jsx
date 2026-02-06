@@ -9,7 +9,7 @@ const App = () => {
   const [theme, setTheme] = useState("light")
 
   function fetchNotes() {
-    axios.get("http://localhost:3000/notes")
+    axios.get("https://note-create-ztt3.onrender.com/notes")
       .then((res)=>{
         setnote(res.data.notes)
       })
@@ -27,7 +27,7 @@ const App = () => {
     e.preventDefault()
     const {title, description} = e.target.elements
 
-    axios.post("http://localhost:3000/notes",{
+    axios.post("https://note-create-ztt3.onrender.com/notes",{
       title: title.value,
       description: description.value
     })
@@ -35,7 +35,7 @@ const App = () => {
   }
 
   function deletehedler(noteId){
-    axios.delete("http://localhost:3000/notes/"+noteId).then(() => {
+    axios.delete("https://note-create-ztt3.onrender.com/notes/"+noteId).then(() => {
       fetchNotes()
     })
   }
@@ -46,7 +46,7 @@ const App = () => {
     // console.log(newtitle.value, newdescription.value)
     // console.log("noteId:", noteId)
 
-    axios.patch("http://localhost:3000/notes/"+noteId, {
+    axios.patch("https://note-create-ztt3.onrender.com/notes/"+noteId, {
       title: newtitle.value,
       description: newdescription.value
     })
