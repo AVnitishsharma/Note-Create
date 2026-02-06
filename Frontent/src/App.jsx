@@ -73,7 +73,7 @@ const App = () => {
         <input type="search" placeholder='Search your Note...' />
         <div className="right">
           <button className="note-create-btn" onClick={() => setPopup(!popup)}>
-            <i className="ri-add-circle-line"></i> Add new note
+            <i className="ri-add-circle-line"></i><span> Add new note</span>
           </button>
           <button onClick={() => setTheme(theme === "light" ? "dark" : "light")} style={{ fontSize: "1.5rem", background: "transparent", border: "none", cursor: "pointer", marginRight: "4rem", color: "var(--text-color)" }}>
           {theme === "light" ? <i className="ri-moon-line"></i> : <i className="ri-sun-line"></i>}
