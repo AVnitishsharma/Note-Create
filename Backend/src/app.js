@@ -1,10 +1,14 @@
 const express = require("express")
 const noteModel = require("./model/note.model")
 const cors = require("cors")
+const path = require("path")
 
 const app = express()
 app.use(express.json())
 app.use(cors())
+app.use(express.static("./src/public"))
+
+
 
 app.post("/notes",async (req,res)=>{
   const {title, description} = req.body
@@ -48,5 +52,11 @@ app.patch("/notes/:id", async (req,res)=>{
     message:"note updated"
   })
 })
+
+app.use("*name", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "public","index.html")
+  );
+});
 
 module.exports = app

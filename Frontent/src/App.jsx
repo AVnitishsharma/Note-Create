@@ -6,6 +6,7 @@ const App = () => {
   const [note, setnote] = useState([])
   const [popup, setPopup] = useState(false)
   const [editpopup, seteditPopup] = useState(null)
+  const [theme, setTheme] = useState("light")
 
   function fetchNotes() {
     axios.get("http://localhost:3000/notes")
@@ -17,6 +18,10 @@ const App = () => {
   useEffect(()=>{
     fetchNotes()
   },[])
+
+  useEffect(() => {
+    document.body.className = theme
+  }, [theme])
 
   function hendlersub(e) {
     e.preventDefault()
@@ -38,8 +43,8 @@ const App = () => {
   function hendleedit(e, noteId){
     e.preventDefault()
     const {newtitle, newdescription} = e.target.elements
-    console.log(newtitle.value, newdescription.value)
-    console.log("noteId:", noteId)
+    // console.log(newtitle.value, newdescription.value)
+    // console.log("noteId:", noteId)
 
     axios.patch("http://localhost:3000/notes/"+noteId, {
       title: newtitle.value,
@@ -51,9 +56,9 @@ const App = () => {
   }
 
   function getRandomColor() {
-    const r = Math.floor(Math.random() * 126) + 20
-    const g = Math.floor(Math.random() * 86) + 20
-    const b = Math.floor(Math.random() * 156) + 20
+    const r = Math.floor(Math.random() * 256) + 50
+    const g = Math.floor(Math.random() * 256) + 20
+    const b = Math.floor(Math.random() * 256) + 80
 
     return `rgb(${r}, ${g}, ${b})`
   }
@@ -65,9 +70,15 @@ const App = () => {
           <li>All</li>
           <li>Fevorite</li>
         </ul>
-        <button className="note-create-btn" onClick={() => setPopup(!popup)}>
-          <i className="ri-add-circle-line"></i> Add new note
-        </button>
+        <input type="search" placeholder='Search your Note...' />
+        <div className="right">
+          <button className="note-create-btn" onClick={() => setPopup(!popup)}>
+            <i className="ri-add-circle-line"></i> Add new note
+          </button>
+          <button onClick={() => setTheme(theme === "light" ? "dark" : "light")} style={{ fontSize: "1.5rem", background: "transparent", border: "none", cursor: "pointer", marginRight: "4rem", color: "var(--text-color)" }}>
+          {theme === "light" ? <i className="ri-moon-line"></i> : <i className="ri-sun-line"></i>}
+          </button>
+        </div>
       </div>
 
       {/* add popup ------------------------------- */}
